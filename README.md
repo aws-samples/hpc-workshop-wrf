@@ -289,8 +289,12 @@ ncview wrfout*
 Hereafter a few screenshots:  
 Humidiy (QVapor)
 ![QVAPOR](./pictures/QVAPOR.JPG)  
+  
+  
 Soil Level Temperature (SLT)
 ![Soil Level Temperature](./pictures/SoilLevelTemperature.JPG)  
+  
+  
 Soil Level Temperature (SLT) over time on a specific map point
 ![Soil Level Temperature for a selected poin over Time](./pictures/SoillevelTemperature_over_time.JPG)  
 
