@@ -49,7 +49,7 @@ This is done by editing  the template file provided in this repo: *pc_setup_scri
 and adjusting parameters related to AWS account, region and VPC.
 In this template file you will find cluster settings that provides good results with WRF and also for many other tightly coupled compute intensive algorithms, 
 key configuration parameters are:
-* using c5n.18xlarge instances for compute nodes. Those instances have a low memory to cpu ratio but cpu up to 3.5 Ghz and 100 Ghz network interfaces with EFA
+* using c5n.18xlarge instances for compute nodes. Those instances have a low memory to cpu ratio but cpu up to 3.4 Ghz sustained clock speed and 100 Ghz network interfaces with EFA
 * enabling EFA to take advantage of low latency networking for distributed computing
 * configuring all compute nodes in the same placement group to further reduce latency due to physical distance among hosts
 * enabling DCV in order to be able to visualize computational results directly from the Master node
