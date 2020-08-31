@@ -1,0 +1,10 @@
+--- configure.wps       2020-06-26 13:52:53.892820639 +0000
++++ configure.wps.new   2020-06-26 13:52:43.812742283 +0000
+@@ -45,7 +45,7 @@
+                         -L$(WRF_DIR)/external/io_grib_share -lio_grib_share \
+                         -L$(WRF_DIR)/external/io_int -lwrfio_int \
+                         -L$(WRF_DIR)/external/io_netcdf -lwrfio_nf \
+-                        -L$(NETCDF)/lib -lnetcdff -lnetcdf
++                        -L$(NETCDF)/lib -lnetcdff -lnetcdf -lgomp
+
+ #### Architecture specific settings ####

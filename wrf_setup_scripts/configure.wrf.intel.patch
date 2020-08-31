@@ -1,0 +1,34 @@
+--- configure.wrf.orig	2020-07-16 18:31:28.734830378 +0000
++++ configure.wrf	2020-07-16 18:35:52.399371689 +0000
+@@ -115,12 +115,12 @@
+ DESCRIPTION     =       INTEL ($SFC/$SCC): Xeon (SNB with AVX mods)
+ DMPARALLEL      =        1
+ OMPCPP          =        -D_OPENMP
+-OMP             =        -openmp -fpp -auto
+-OMPCC           =        -openmp -fpp -auto
++OMP             =        -qopenmp -fpp -auto
++OMPCC           =        -qopenmp -fpp -auto
+ SFC             =       ifort 
+ SCC             =       icc 
+ CCOMP           =       icc 
+-DM_FC           =       mpif90 -f90=$(SFC)
++DM_FC           =       mpiifort
+ DM_CC           =       mpicc -cc=$(SCC) -DMPI2_SUPPORT -DMPI2_THREAD_SUPPORT
+ FC              =       $(DM_FC)
+ CC              =       $(DM_CC) -DFSEEKO64_OK 
+@@ -129,12 +129,12 @@
+ PROMOTION       =       -real-size `expr 8 \* $(RWORDSIZE)` -i4
+ ARCH_LOCAL      =       -DNONSTANDARD_SYSTEM_FUNC -DCHUNK=64 -DXEON_OPTIMIZED_WSM5 -DOPTIMIZE_CFL_TEST  -DWRF_USE_CLM
+ OPTNOSIMD       =
+-OPTAVX          =       -xAVX
+-CFLAGS_LOCAL    =       -w -O3 $(OPTAVX)
++OPTAVX          =       -xHost
++CFLAGS_LOCAL    =       -w -O3 $(OPTAVX) -qopenmp
+ LDFLAGS_LOCAL   =       $(OPTAVX)
+ CPLUSPLUSLIB    =       
+ ESMF_LDFLAG     =       $(CPLUSPLUSLIB)
+-FCOPTIM         =       -O3 $(OPTAVX)
++FCOPTIM         =       -O3 $(OPTAVX) -qopenmp
+ FCREDUCEDOPT	=       $(FCOPTIM)
+ FCNOOPT		=       -O0 -fno-inline -no-ip
+ FCDEBUG         =       # -g $(FCNOOPT) -traceback # -fpe0 -check noarg_temp_created,bounds,format,output_conversion,pointers,uninit -ftrapuv -unroll0 -u
