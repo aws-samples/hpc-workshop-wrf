@@ -240,33 +240,11 @@ We are now ready to submit a wrf job using pre-installed scheduler (i.e. SLURM)
 ```bash
 sbatch --ntasks 72  ${SCRIPTDIR}/slurm_run_wrf.sh
 ```
-With this statement we are asking to the scheduler to run ths job on a 72 phisical cores,
+With this statement we are asking to the scheduler to run ths job on a 72 physical cores,
 integration among scheduler and AWS Parallelcluster checks if thre are enough resoruces to accomodate this job and, if not, spin up a number of new instances according to job needs.
 Output and log files are saved under $WRFWORK directory.
 
 We can run the same forecast using a different number of cores in order to be able to understand how WRF scales on AWS.
-Included in this repo there is also a script that allows compiling WRF using Intel Compilers provided as part of the OneApi Intel preview.
-Time required to compile WRF with Intel compiler is about 40 mintues and can be achieved by issuing the following command:
-```bash
-cd /shared/hpc-workshop-wrf/
-
-sudo bash setup_intel.sh
-```
-In order to perform a forecast using Itel compiled verion, all steps starting from prepare config shall be re-executed after loading the new environment variables:
-```bash
-source /shared/setup_env.sh
-```
-
-
-The following table shows 3 different tests for the same forecasr, involving different level of parallelism and using gcc or Intel compiler.
-
-| Number of Processors | WRF Elapsed Time (gcc) | WRF Elapsed Time (Intel) |
-|----------------------|:----------------------:|-------------------------:|
-|         72 (2 nodes) |            5544 sec.   |               3220 sec.  |
-|        144 (4 nodes) |            3022 sec.   |               1989 sec.  |
-|        216 (6 nodes) |            2304 sec.   |               1575 sec.  |
-
-
 
 Further more, AWS parallelcluster allows two different usage scenario:
 - Single AWS Parallelcluster used to run multiple jobs in parallel leveraging Job schedulers
@@ -297,6 +275,30 @@ Soil Level Temperature (SLT)
   
 Soil Level Temperature (SLT) over time on a specific map point  
 ![Soil Level Temperature for a selected poin over Time](./pictures/SoillevelTemperature_over_time.JPG)  
+
+
+### Compiling with Intel using oneAPI HPC Toolkit (Beta) 
+Included in this repo there is also a script that allows compiling WRF using Intel Compilers provided as part of the OneApi Intel preview.
+Time required to compile WRF with Intel compiler is about 40 mintues and can be achieved by issuing the following command:
+```bash
+cd /shared/hpc-workshop-wrf/
+
+sudo bash setup_intel.sh
+```
+In order to perform a forecast using Itel compiled verion, all steps starting from prepare config shall be re-executed after loading the new environment variables:
+```bash
+source /shared/setup_env.sh
+```
+
+
+The following table shows 3 different tests for the same forecasr, involving different level of parallelism and using gcc or Intel compiler.
+
+| Number of Processors | WRF Elapsed Time (gcc) | WRF Elapsed Time (Intel) |
+|----------------------|:----------------------:|-------------------------:|
+|         72 (2 nodes) |            5544 sec.   |               3220 sec.  |
+|        144 (4 nodes) |            3022 sec.   |               1989 sec.  |
+|        216 (6 nodes) |            2304 sec.   |               1575 sec.  |
+
 
 
 
