@@ -85,7 +85,7 @@ ebs_settings = custom
 extra_json = { "cfncluster" : { "cfn_scheduler_slots" : "cores" } }
 s3_read_write_resource =  arn:aws:s3:::<POST-INSTALL-SCRIPT-BUCKET-NAME>/*
 post_install = s3://<POST-INSTALL-SCRIPT-BUCKET-NAME>/git_download_and_run.sh
-post_install_args = https://github.com/aws-samples/hpc-workshop-wrf.git/setup.sh 
+post_install_args = https://github.com/aws-samples/hpc-workshop-wrf.git,setup.sh 
 
 
 [vpc public]
