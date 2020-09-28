@@ -82,6 +82,7 @@ placement = cluster
 placement_group = DYNAMIC
 base_os = alinux2
 ebs_settings = custom
+disable_hyperthreading = true
 extra_json = { "cfncluster" : { "cfn_scheduler_slots" : "cores" } }
 s3_read_write_resource =  arn:aws:s3:::<POST-INSTALL-SCRIPT-BUCKET-NAME>/*
 post_install = s3://<POST-INSTALL-SCRIPT-BUCKET-NAME>/git_download_and_run.sh
