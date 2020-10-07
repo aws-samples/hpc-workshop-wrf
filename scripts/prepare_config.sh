@@ -12,7 +12,7 @@ ulimit -s unlimited
 NP=$(ls /sys/class/cpuid/ | wc -l)
 
 NP=$(( $NP / 2 ))
-echo "Paralle Process $NP"
+echo "Parallel Process $NP"
 
 #Set-up current date as processing date variables
 DATA=$(date +%Y%m%d)'00'
