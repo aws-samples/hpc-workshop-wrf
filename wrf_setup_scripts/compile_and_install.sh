@@ -68,7 +68,7 @@ cd WRFV3
 cd $DIR
 ln -s WRFV3 WRFV3-3.9.1.1
 
-################## COMPILE WPF    ################################################
+################## COMPILE WPS    ################################################
 cd $DIR
 tar -zxvf /shared/download/WPSV3.9.1.TAR.gz
 cd WPS
