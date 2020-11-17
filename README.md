@@ -16,6 +16,8 @@ Scripts included in this repo are released under MIT license and perform all req
 to download and compile required dependencies and tools needed to be able to run 
 a full weather forecast from initialization data download to visualization of outcomes.
 
+This workshop complements the webinar that has been presented during the [HPC on AWS Virtual Event](https://youtu.be/ZxrspLi28hw).
+
 ## Security
 
 See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
