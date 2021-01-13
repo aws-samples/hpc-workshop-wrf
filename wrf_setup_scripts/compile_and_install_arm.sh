@@ -42,7 +42,7 @@ make install
 
 #
 cd $BUILDDIR
-yum -y install libcurl-devel
+sudo yum -y install libcurl-devel
 tar -zxvf /shared/download/netcdf-fortran-4.5.3.tar.gz
 bash <<@EOF
 cd netcdf-fortran-4.5.3
