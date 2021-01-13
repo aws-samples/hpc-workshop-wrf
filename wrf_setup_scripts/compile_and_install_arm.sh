@@ -164,7 +164,7 @@ export COMP_SYS=gnu_linux
 export CPPFLAGS="-I/shared/gccWRF/netcdf/include/ -I/shared/gccWRF/grib2/include  -L/shared/gccWRF/netcdf/lib/ -L/shared/gccWRF/grib2/lib/"
 
 echo "makefile < ${SETUP_DIR}/wgrib_makefile.patch"
-patch makefile < ${SETUP_DIR}/wrf_setup_scripts/wgrib_makefile.patch
+patch --fuzz 3 makefile < ${SETUP_DIR}/wrf_setup_scripts/wgrib_makefile.patch
 
 
 make
