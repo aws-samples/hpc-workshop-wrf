@@ -17,7 +17,7 @@ cd hdf5-1.10.5
 ./configure CC=mpicc FC=mpif90 CXX=mpicxx --enable-parallel --enable-fortran --prefix=$DIR/netcdf --with-pic
 sed -i -e 's#wl=""#wl="-Wl,"#g' libtool
 sed -i -e 's#pic_flag=""#pic_flag=" -fPIC -DPIC"#g' libtool
-make -j 4
+make -j 8
 make install
 
 
@@ -36,7 +36,7 @@ export MPIFC=mpif90
 export MPICXX=mpicxx
 
 ./configure --prefix=$DIR/netcdf CPPFLAGS="-I$DIR/netcdf/include" CFLAGS="-DHAVE_STRDUP -O3 -mcpu=native" LDFLAGS="-L$DIR/netcdf/lib" --enable-shared --enable-netcdf-4  --with-pic --disable-doxygen --disable-dap
-make -j 4
+make -j 8
 make install
 @EOF
 
@@ -63,12 +63,12 @@ export LIBS=" -lnetcdf -lhdf5_hl -lhdf5 -lz -lcurl"
 # Need netcdf, hdf5 and libcurl libs in library path to allow configure tests to succeed
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$DIR/netcdf/lib
 ./configure  --prefix=$DIR/netcdf --enable-shared --with-pic --disable-doxygen
-make -j4
+make -j 8
 make check
 make install
 @EOF
 
-################## COMPILE NETCDF ################################################
+################## COMPILE ZLIB ################################################
 cd $BUILDDIR
 tar -zxvf /shared/download/zlib-1.2.11.tar.gz
 cd zlib-1.2.11
@@ -99,7 +99,7 @@ cd $DIR
 tar -zxvf /shared/download/WRFV3.9.1.1.TAR.gz
 cd WRFV3
 
-echp "arch/configure_new.defaults < ${SETUP_DIR}/wrf_configure_new.defaults"
+echo "arch/configure_new.defaults < ${SETUP_DIR}/wrf_configure_new.defaults"
 patch arch/configure_new.defaults < ${SETUP_DIR}/wrf_setup_scripts/wrf_configure_new.defaults.patch
 
 #Copy file config.wrf instead of manual configuration
@@ -113,7 +113,7 @@ patch arch/configure_new.defaults < ${SETUP_DIR}/wrf_setup_scripts/wrf_configure
 @EOF
 
 #Compile in parallel to speed up compilation process
-./compile -j 4 em_real >compile.log 2>&1
+./compile -j 8 em_real >compile.log 2>&1
 #Compile in sequence in order to solve unmanaged parallel compilation issues
 ./compile  em_real >compile.log 2>&1
 
@@ -125,8 +125,8 @@ cd $DIR
 tar -zxvf /shared/download/WPSV3.9.1.TAR.gz
 cd WPS
 
-echp "arch/configure_new.defaults < ${SETUP_DIR}/wrf_configure_new.defaults"
-patch arch/configure_new.defaults < ${SETUP_DIR}/wrf_setup_scripts/wrf_configure_new.defaults.patch
+echo "arch/configure_new.defaults < ${SETUP_DIR}/wrf_configure_new.defaults"
+patch arch/configure.defaults < ${SETUP_DIR}/wrf_setup_scripts/wps_configure_new.defaults.patch
 
 #REPLACED WITH STATIC CONFIG FILE
 #./configure step with option:
@@ -138,7 +138,7 @@ patch arch/configure_new.defaults < ${SETUP_DIR}/wrf_setup_scripts/wrf_configure
 1
 @EOF
 
-echp "configure.wps < ${SETUP_DIR}/wrf_setup_scripts"
+echo "configure.wps < ${SETUP_DIR}/wrf_setup_scripts"
 patch configure.wps < ${SETUP_DIR}/wrf_setup_scripts/configure.wps.patch
 
 #Compile WPS
@@ -161,10 +161,11 @@ cd grib2
 bash <<@EOF
 export FC=gfortran
 export COMP_SYS=gnu_linux
+export CPPFLAGS="-I/shared/gccWRF/netcdf/include/ -I/shared/gccWRF/grib2/include  -L/shared/gccWRF/netcdf/lib/ -L/shared/gccWRF/grib2/lib/"
 
-cp /usr/share/automake-*/config.guess ./jasper-1.900.1/acaux/config.guess
-cp /usr/share/automake-*/config.guess ./jasper-1.900.1/config.guess
-cp /usr/share/automake-*/config.guess ./netcdf-3.6.3/config.guess
+echo "makefile < ${SETUP_DIR}/wgrib_makefile.patch"
+patch makefile < ${SETUP_DIR}/wrf_setup_scripts/wgrib_makefile.patch
+
 
 make
 cp wgrib2/wgrib2  $DIR/bin
