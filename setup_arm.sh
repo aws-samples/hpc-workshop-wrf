@@ -44,6 +44,8 @@ ln -s ${shared_folder}/gcc_setup_env.sh ${shared_folder}/setup_env.sh
 }
 
 echo "NODE TYPE: ${cfn_node_type}"
+yum -y install libcurl-devel
+yum -y install libXaw-devel
 
 case ${cfn_node_type} in
         MasterServer)
