@@ -53,7 +53,7 @@ case ${cfn_node_type} in
                 create_env_file
                 source ${shared_folder}/setup_env.sh
                 cd wrf_setup_scripts
-                /bin/su ec2-user -c "/bin/bash -i compile_and_install.sh"
+                /bin/su ec2-user -c "/bin/bash -i compile_and_install_arm.sh"
                 /bin/su ec2-user -c "/bin/bash -i build_dir.sh"
 
         ;;
