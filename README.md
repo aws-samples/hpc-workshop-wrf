@@ -299,9 +299,7 @@ The following table shows 3 different tests for the same forecast, involving dif
 - c5n.18xlarge (about 3.88 USD/hour) intances with Intel processors compiled with gcc or Intel compiler and leveraging Intel MPI and EFA  
 - c6gn.16xlarge (about 2.18 USD/hour) instances with Graviton2 processors compiled with gcc and leveraging OpenMPI and EFA
 
-| Number of Nodes      | WRF Elapsed Time (gcc)     | WRF Elapsed Time (Intel)   | WRF Elapsed Time (gcc)     |
-|                      |     c5n.18xlarge           |     c5n.18xlarge           |    c6gn.16xlarge           |
-|                      |(36 physical cores per node)|(36 physical cores per node)|(64 physical cores per node)|
+| Number of Nodes      | WRF Elapsed Time (gcc)<br>     c5n.18xlarge<br>(36 physical cores per node)| WRF Elapsed Time (intel)<br>     c5n.18xlarge<br>(36 physical cores per node)|WRF Elapsed Time (gcc)<br>    c6gn.16xlarge<br>(64 physical cores per node)|
 |----------------------|:--------------------------:|---------------------------:|---------------------------:|
 |             2 nodes  |            5544 sec.       |               3220 sec.    |          3840 sec.         |
 |             4 nodes  |            3022 sec.       |               1989 sec.    |                            |                          
