@@ -302,7 +302,7 @@ The following table shows 3 different tests for the same forecast, involving dif
 | Number of Nodes      | WRF Elapsed Time (gcc)<br>     c5n.18xlarge<br>(36 physical cores per node)| WRF Elapsed Time (intel)<br>     c5n.18xlarge<br>(36 physical cores per node)|WRF Elapsed Time (gcc)<br>    c6gn.16xlarge<br>(64 physical cores per node)|
 |----------------------|:--------------------------:|---------------------------:|---------------------------:|
 |             2 nodes  |            5544 sec.       |               3220 sec.    |          3840 sec.         |
-|             4 nodes  |            3022 sec.       |               1989 sec.    |                            |                          
+|             4 nodes  |            3022 sec.       |               1989 sec.    |          2537 sec.         |                          
 |             6 nodes  |            2304 sec.       |               1575 sec.    |          1820 sec.         |
 
 
