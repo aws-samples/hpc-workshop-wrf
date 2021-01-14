@@ -295,13 +295,17 @@ source /shared/setup_env.sh
 ```
 
 
-The following table shows 3 different tests for the same forecast, involving different level of parallelism and using gcc or Intel compiler.
+The following table shows 3 different tests for the same forecast, involving different level of parallelism and using:
+- c5n.18xlarge (about 3.88 USD/hour) intances with Intel processors compiled with gcc or Intel compiler and leveraging Intel MPI and EFA  
+- c6gn.16xlarge (about 2.18 USD/hour) instances with Graviton2 processors compiled with gcc and leveraging OpenMPI and EFA
 
-| Number of Processors | WRF Elapsed Time (gcc) | WRF Elapsed Time (Intel) |
-|----------------------|:----------------------:|-------------------------:|
-|         72 (2 nodes) |            5544 sec.   |               3220 sec.  |
-|        144 (4 nodes) |            3022 sec.   |               1989 sec.  |
-|        216 (6 nodes) |            2304 sec.   |               1575 sec.  |
+| Number of Nodes      | WRF Elapsed Time (gcc)     | WRF Elapsed Time (Intel)   | WRF Elapsed Time (gcc)     |
+|                      |     c5n.18xlarge           |     c5n.18xlarge           |    c6gn.16xlarge           |
+|                      |(36 phisical cores per node)|(36 phisical cores per node)|(64 phisical cores per node)|
+|----------------------|:--------------------------:|---------------------------:|---------------------------:|
+|             2 nodes  |            5544 sec.       |               3220 sec.    |          3840 sec.         |
+|             4 nodes  |            3022 sec.       |               1989 sec.    |                            |                          
+|             6 nodes  |            2304 sec.       |               1575 sec.    |          1820 sec.         |
 
 
 
