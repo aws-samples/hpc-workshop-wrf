@@ -42,9 +42,10 @@ aws s3 mb  s3://${BUCKET_NAME} --region=${REGION}
 ```
 
 Depending on the target processor faminy x64 or Graviton2 follow adjust the configuration parameter accordingly:  
-- [Configuring for x64](#x86)
+- [Configuring for x64](#x86-64)
 - [Configuring for Graviton2](#Graviton2)
 
+<a id="x86-64"></a>
 ### Configuring for x64 {#x86}  
 Copy post install script on previously created bucket:
 
@@ -124,8 +125,8 @@ ssh = ssh {CFN_USER}@{MASTER_IP} {ARGS}
 
 ```
 
-
-### Configuring for Graviton2 {#Graviton2}
+<a id="Graviton2"></a>
+### Configuring for Graviton2 
 
 
 
