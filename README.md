@@ -122,7 +122,7 @@ sanity_check = true
 ssh = ssh {CFN_USER}@{MASTER_IP} {ARGS}
 
 ```  
-go to [Create Cluster](#CreateCluster)
+go to [Create Cluster](#CreateCluster)  
 
 <a id="Graviton2"></a>
 ### Configuring for Graviton2  
