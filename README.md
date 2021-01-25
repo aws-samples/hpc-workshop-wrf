@@ -190,7 +190,7 @@ ssh = ssh {CFN_USER}@{MASTER_IP} {ARGS}
 
 ```
 
-<a id="#CreateCluster"></a>
+<a id="CreateCluster"></a>
 ## Create the cluster
 We are now ready to use AWS ParallelCluster to spin up our new cluster for running weather forecasts by tiping:
 ```bash
