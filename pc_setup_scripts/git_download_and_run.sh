@@ -17,7 +17,7 @@ case ${cfn_node_type} in
         MasterServer)
                 echo "I am Master node"
                 cd ${shared_folder}
-                git clone ${github_repo}
+                git clone --branch graviton ${github_repo}
         ;;
         ComputeFleet)
                 echo "I am a Compute node"
