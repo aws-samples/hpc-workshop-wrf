@@ -46,6 +46,7 @@ module unload intelmpi
 module load intelmpi
 
 source /opt/intel/oneapi/setvars.sh
+export DIR=${shared_folder}/oneapiWRF
 @EOF
 
 chmod 777 ${shared_folder}
