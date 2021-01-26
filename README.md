@@ -379,8 +379,8 @@ The following table shows 3 different tests for the same forecast, involving dif
 |             2 nodes  |            5544 sec.       |               3220 sec.    |          3840 sec.         |
 |             4 nodes  |            3022 sec.       |               1989 sec.    |          2537 sec.         |                          
 |             6 nodes  |            2304 sec.       |               1575 sec.    |          1820 sec.         |
-|            12 nodes  |                            |                            |          1240 sec.         |
-|            24 nodes  |                            |                723 sec.    |          1146 sec.         |
+|            12 nodes  |                            |                960 sec.    |          1240 sec.         |
+|            24 nodes  |                            |                720 sec.    |          1146 sec.         |
 
 
 
