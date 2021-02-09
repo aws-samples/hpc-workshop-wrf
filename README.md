@@ -51,7 +51,7 @@ Now it is time to configure AWS ParallelCluster according to our needs.
 This is done by editing  the template file provided in this repo: *pc_setup_scripts/pcluster-config.template*  
 and adjusting parameters related to AWS account, region and VPC.
 
-Depending on the target processor faminy x64 or Graviton2 follow adjust the configuration parameter accordingly:  
+Depending on the target processor faminy adjust configuration parameters accordingly:  
 - [Configuring for x64](#x86-64)
 - [Configuring for Graviton2](#Graviton2)
 
