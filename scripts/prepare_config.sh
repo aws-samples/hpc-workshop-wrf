@@ -80,8 +80,8 @@ grbname1='WRF_FAT_'$DATA'.grb'
 
 cd $WRFWORK
 
-rm wrfout*
-rm rsl.*
+rm -f wrfout*
+rm -f rsl.*
 
 cat<<EOF >namelist.input
  &time_control
