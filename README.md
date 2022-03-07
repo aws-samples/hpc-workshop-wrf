@@ -28,6 +28,7 @@ This library is licensed under the MIT-0 License. See the LICENSE file.
 
 ## Cluster Setup with AWS ParallelCluster
 
+This workshop has been prepared for AWS ParallelCluster version < 3.  
 The first step is to install AWS ParallelCluster console according to the following guide: https://docs.aws.amazon.com/parallelcluster/latest/ug/install-virtualenv.html
 
 Once you have AWS ParallelCluster installed (and activated if you are installing it in a Python Virtual Env), the next step is to 
