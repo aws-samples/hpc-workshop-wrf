@@ -44,7 +44,7 @@ aws s3 cp pc_setup_scripts/git_download_and_run.sh  s3://${BUCKET_NAME}
 ```
 Post install scripts are executed on each and every node of the cluster at boot time after all AWS Parallel cluster 
 software packages are installed and before the node will become ready.
-In this workshop post install script will take care of setting up Master node downloading, compiling and installing 
+In this workshop post install script will take care of setting up Head node downloading, compiling and installing 
 all WRF related software components and configure Compute nodes in order to adjust linux limits to be able to cope 
 with stack and memory requirements from WRF.
 
@@ -56,7 +56,7 @@ key configuration parameters are:
 * using c5n.18xlarge instances for compute nodes. Those instances have a low memory to CPU ratio but CPU up to 3.4 Ghz sustained clock speed and 100 Gbps network interfaces with EFA
 * enabling EFA to take advantage of low latency networking for distributed computing
 * configuring all compute nodes in the same placement group to further reduce latency due to physical distance among hosts
-* enabling [DCV](https://docs.aws.amazon.com/dcv/latest/adminguide/what-is-dcv.html) in order to be able to visualize computational results directly from the Master node
+* enabling [DCV](https://docs.aws.amazon.com/dcv/latest/adminguide/what-is-dcv.html) in order to be able to visualize computational results directly from the Head node
 * limiting maximum number of nodes to 6 (to avoid generating unexpected large clusters)
 * configuring 0 compute node at rest (all compute nodes are shut down whene there are no job submitted to the scheduler)
 
@@ -134,7 +134,7 @@ Cluster spin-up will require approximately 30 minutes due to download of WRF sou
 
 ## Log into the cluster using DCV
 Once the cluster is up and running we can now log onto it leveraging DCV.
-DCV allows a logging onto the Master node using a web browser and a signed url returned by following command:
+DCV allows a logging onto the Head node using a web browser and a signed url returned by following command:
 ```bash
 pcluster dcv connect --key-path <PATH TO EC2 KEY NAME.pem> wrf-workshop
 ```
@@ -146,7 +146,7 @@ Load environment variables related to WRF set-up:
 ```bash
 source /shared/setup_env.sh
 ```
-This step has to be executed for each and every new window/session we open on the master node.  
+This step has to be executed for each and every new window/session we open on the Head node.  
 You can avoud it by appending that command to ~./bashrc
 ```bash
 echo "source /shared/setup_env.sh" >>  ~/.bashrc
@@ -315,8 +315,8 @@ To remove the cluster we can use the following command issued from the parallel 
 pcluster delete wrf-workshop
 ```
 
-This command deletes the Master node and you will loose any forecast data.
-The Master node can also be simply switched off when not used and switched on again 
+This command deletes the Head node and you will loose any forecast data.
+The Head node can also be simply switched off when not used and switched on again 
 to start processing a new forecast.
 Last thing to remove is the s3 bucket used to store AWS Paralelcluster post install script.
 ```bash
