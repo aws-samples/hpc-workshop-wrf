@@ -1,7 +1,7 @@
 #!/bin/bash -i
 . /etc/parallelcluster/cfnconfig
 
-shared_folder=$(echo $cfn_shared_dir | cut -d ',' -f 1 )
+shared_folder=$(echo $cfn_ebs_shared_dirs | cut -d ',' -f 1 )
 
 
 function create_env_file {
@@ -55,8 +55,8 @@ ln -s ${shared_folder}/gcc_setup_env.sh ${shared_folder}/setup_env.sh
 echo "NODE TYPE: ${cfn_node_type}"
 
 case ${cfn_node_type} in
-        MasterServer)
-                echo "I am Master node"
+        HeadNode)
+                echo "I am the HeadNode node"
                 create_env_file
                 source ${shared_folder}/setup_env.sh
                 cd wrf_setup_scripts
