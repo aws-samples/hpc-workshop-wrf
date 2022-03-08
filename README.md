@@ -80,16 +80,16 @@ HeadNode:
        Size: 100
        VolumeType: gp3
   Ssh:
-    KeyName: <SSH_KEY>
+    KeyName: <EC2 KEY NAME>
   Dcv:
     Enabled: true
   Iam:
      S3Access:
-       - BucketName: <BUCKET_NAME>
+       - BucketName: <POST-INSTALL-SCRIPT-BUCKET-NAME>
          EnableWriteAccess: true
   CustomActions:
     OnNodeConfigured:
-      Script: s3://<BUCKET_NAME>/git_download_and_run.sh
+      Script: s3://<POST-INSTALL-SCRIPT-BUCKET-NAME>/git_download_and_run.sh
       Args:
         - https://github.com/aws-samples/hpc-workshop-wrf.git,setup.sh
 SharedStorage:
