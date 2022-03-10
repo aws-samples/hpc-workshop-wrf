@@ -1,4 +1,6 @@
 #!/bin/bash -i
+exec 2>/tmp/debug.$$ù
+set -x
 . /etc/parallelcluster/cfnconfig
 
 shared_folder=$(echo $cfn_ebs_shared_dirs | cut -d ',' -f 1 )
@@ -38,11 +40,63 @@ rm -f ${shared_folder}/setup_env.sh
 ln -s ${shared_folder}/intel_setup_env.sh ${shared_folder}/setup_env.sh
 }
 
+function install_spack {
+### Install yq
+yum install -y wget
+if [[ $(uname -m) == "aarch64" ]];then 
+   wget -qO /usr/bin/yq https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_arm64
+else
+   wget -qO /usr/bin/yq https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64
+fi
+chmod +x /usr/bin/yq
+#########
+### Install Spack
+yum install -y python3
+pip3 install boto3
+# Install the latest Spack release
+export SPACK_ROOT=/usr/local/spack
+mkdir -p $SPACK_ROOT
+cd $SPACK_ROOT/..
+git clone https://github.com/spack/spack
+cd $SPACK_ROOT
+git checkout releases/$( \
+    git branch -a --list '*releases*'| \
+    awk -F '/' 'END{print $NF}')
+source $SPACK_ROOT/share/spack/setup-env.sh
+
+echo "export SPACK_ROOT=/share" > /etc/profile.d/spack.sh
+echo "source $SPACK_ROOT/share/spack/setup-env.sh" >> /etc/profile.d/spack.sh
+
+cat> /etc/profile.d/spack-env.sh << END
+# Make the spack command available to the shell
+source $SPACK_ROOT/share/spack/setup-env.sh
+END
+mkdir -p $SPACK_ROOT/var/spack/environments/aws
+### Download aws env file
+wget https://gist.githubusercontent.com/bollig/71383f92143ed6b006e5c3892343fef8/raw/2_spack.yaml -O $SPACK_ROOT/var/spack/environments/aws/spack.yaml
+### Usersetup
+source /etc/os-release 
+if [[ $ID == "centos" ]];then
+  chown -R centos: /usr/local/spack /fsx/spack
+elif [[ $ID == "amzn" ]];then
+  chown -R ec2-user: /usr/local/spack /fsx/spack
+fi
+
+### Change config
+export SPACK_SHARED=/shared/spack
+yq w -i /usr/local/spack/etc/spack/defaults/config.yaml config.module_roots.lmod ${SPACK_SHARED}/lmod
+yq w -i /usr/local/spack/etc/spack/defaults/config.yaml config.module_roots.tcl ${SPACK_SHARED}/modules
+yq w -i /usr/local/spack/etc/spack/defaults/config.yaml config.install_tree.root ${SPACK_SHARED}/opt/spack
+
+}
+
 echo "NODE TYPE: ${cfn_node_type}"
 
 case ${cfn_node_type} in
         HeadNode)
                 echo "I am the HeadNode node"
+                
+                
                 create_env_file
                 source ${shared_folder}/setup_env.sh
                 cd wrf_setup_scripts
