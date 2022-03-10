@@ -13,39 +13,23 @@ export SETUP_DIR=${shared_folder}/hpc-workshop-wrf
 export BUILDDIR=${shared_folder}/build/oneapiWRF
 export DIR=${shared_folder}/oneapiWRF
 export SCRIPTDIR=${shared_folder}/oneapiWRF/bin
-#Compiler Specific iCC
-export CC=icc
-export CXX=icpc
-export CFLAGS='-O3 -xHost -ip -no-prec-div -static-intel'
-export CXXFLAGS='-O3 -xHost -ip -no-prec-div -static-intel'
-export F77=ifort
-export FC=ifort
-export F90=ifort
-export FFLAGS='-O3 -xHost -ip -no-prec-div -static-intel'
-export CPP='icc -E'
-export CXXCPP='icpc -E'
 
-export JASPERLIB=${shared_folder}/oneapiWRF/grib2/lib
-export JASPERINC=${shared_folder}/oneapiWRF/grib2/include
-export LDFLAGS=-L${shared_folder}/oneapiWRF/grib2/lib
-export CPPFLAGS=-I${shared_folder}/oneapiWRF/grib2/include
-export PATH=${shared_folder}/oneapiWRF/netcdf/bin:${shared_folder}/oneapiWRF/bin:\$PATH
-export NETCDF=${shared_folder}/oneapiWRF/netcdf
-export JASPERLIB=${shared_folder}/oneapiWRF/grib2/lib
-export JASPERINC=${shared_folder}/oneapiWRF/grib2/include
 export TARGET_DIR=\${SHARED_DIR}/FORECAST/domains/test.intel/
 export GEOG_BASE_DIR=\${SHARED_DIR}/FORECAST/domains/
-export WRF_DIR=\${DIR}/WRFV3-3.9.1.1
-export WPS_DIR=\${DIR}/WPS
+
+export WRF_DIR=\$(spack location -i wrf)
+export WPS_DIR=\$(spack location -i wps)
+
 export KMP_STACKSIZE=128M
 export KMP_AFFINITY=granularity=fine,compact,1,0
 export OMP_NUM_THREADS=2
 
-module unload intelmpi
+spack env activate wrf-workshop-env
+spack load intel-oneapi-mpi
+spack load wrf
+spack load wps
+spack load wgrib2
 
-module load intelmpi
-
-source /opt/intel/oneapi/setvars.sh
 @EOF
 
 chmod 777 ${shared_folder}
@@ -54,31 +38,12 @@ rm -f ${shared_folder}/setup_env.sh
 ln -s ${shared_folder}/intel_setup_env.sh ${shared_folder}/setup_env.sh
 }
 
-function install_intel_onepi_beta {
-echo "Installing Intel ONEAPI BETA"     
-#Install Intel OpenAPI Compiler
-cat > /tmp/oneAPI.repo << EOF
-[oneAPI]
-name=Intel(R) oneAPI repository
-baseurl=https://yum.repos.intel.com/oneapi
-enabled=1
-gpgcheck=1
-repo_gpgcheck=1
-gpgkey=https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-EOF
-
-sudo mv /tmp/oneAPI.repo /etc/yum.repos.d
-
-yum -y install intel-hpckit
-}
-
 echo "NODE TYPE: ${cfn_node_type}"
 
 case ${cfn_node_type} in
-        HeadNode)
-                echo "I am the HeadNode node"
+        MasterServer)
+                echo "I am Master node"
                 create_env_file
-                install_intel_onepi_beta
                 source ${shared_folder}/setup_env.sh
                 cd wrf_setup_scripts
                 /bin/su ec2-user -c "/bin/bash -i compile_and_install_intel.sh"
