@@ -41,8 +41,8 @@ ln -s ${shared_folder}/intel_setup_env.sh ${shared_folder}/setup_env.sh
 echo "NODE TYPE: ${cfn_node_type}"
 
 case ${cfn_node_type} in
-        MasterServer)
-                echo "I am Master node"
+        HeadNode)
+                echo "I am the HeadNode node"
                 create_env_file
                 source ${shared_folder}/setup_env.sh
                 cd wrf_setup_scripts
