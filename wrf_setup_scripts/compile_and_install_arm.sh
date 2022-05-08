@@ -23,8 +23,8 @@ make install
 
 ################## COMPILE NETCDF ################################################
 cd $BUILDDIR
-tar -zxvf /shared/download/netcdf-c-4.7.4.tar.gz
-cd netcdf-c-4.7.4
+tar -zxvf /shared/download/netcdf-c-4.8.1.tar.gz
+cd netcdf-c-4.8.1
 
 bash <<@EOF
 export CC=mpicc
@@ -43,9 +43,9 @@ make install
 #
 cd $BUILDDIR
 sudo yum -y install libcurl-devel
-tar -zxvf /shared/download/netcdf-fortran-4.5.3.tar.gz
+tar -zxvf /shared/download/netcdf-fortran-4.5.4.tar.gz
 bash <<@EOF
-cd netcdf-fortran-4.5.3
+cd netcdf-fortran-4.5.4
 export CC=gcc
 export CXX=g++
 export F77=gfortran
