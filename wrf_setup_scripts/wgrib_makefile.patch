@@ -1,12 +1,11 @@
---- makefile.old        2021-01-13 12:46:31.701403717 +0000
-+++ makefile    2021-01-13 12:47:11.131083799 +0000
-@@ -723,7 +723,7 @@
+--- makefile.orig       2022-05-08 14:26:27.769486628 +0000
++++ makefile    2022-05-08 14:27:57.117228480 +0000
+@@ -829,7 +829,7 @@
  all:   ${netcdf4src} ${hdf5src} ${prog} aux_progs/gmerge aux_progs/smallest_grib2 aux_progs/smallest_4
- 
- 
--${prog}:        $w/*.c $w/*.h ${jlib} ${aeclib} ${netcdf3lib} ${pnglib} ${hdf5lib} ${g2clib} ${netcdf4lib} ${iplib} ${spectrallib} ${gctpclib} ${proj4lib}
-+${prog}:        $w/*.c $w/*.h ${aeclib} ${pnglib} ${g2clib} ${iplib} ${spectrallib} ${gctpclib} ${proj4lib}
+
+
+-${prog}:        $w/*.c $w/*.h ${jlib} ${aeclib} ${netcdf3lib} ${pnglib} ${hdf5lib} ${g2clib} ${netcdf4lib} ${iplib} ${spectrallib} ${gctpclib} ${proj4lib} ${ojlib}
++${prog}:        $w/*.c $w/*.h ${aeclib} ${pnglib} ${g2clib} ${iplib} ${spectrallib} ${gctpclib} ${proj4lib} ${ojlib}
         cd "$w" && export LDFLAGS="${wLDFLAGS}" && export CPPFLAGS="${wCPPFLAGS}" && ${MAKE}
- 
- fast:        $w/*.c $w/*.h ${jlib} ${aeclib} ${netcdf3lib} ${pnglib} ${hdf5lib} ${g2clib} ${netcdf4lib} ${iplib} ${spectrallib} ${gctpclib} ${proj4lib}
- 
+
+ fast:        $w/*.c $w/*.h ${jlib} ${aeclib} ${netcdf3lib} ${pnglib} ${hdf5lib} ${g2clib} ${netcdf4lib} ${iplib} ${spectrallib} ${gctpclib} ${proj4lib} ${ojlib}
