@@ -4,8 +4,9 @@ mkdir -p download
 cd download
 wget ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-4.1.3.tar.gz 
 wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.5/src/hdf5-1.10.5.tar.gz
-wget https://www.unidata.ucar.edu/downloads/netcdf/ftp/netcdf-c-4.8.1.tar.gz
-wget https://www.unidata.ucar.edu/downloads/netcdf/ftp/netcdf-fortran-4.5.4.tar.gz
+wget https://downloads.unidata.ucar.edu/netcdf-c/4.8.1/netcdf-c-4.8.1.tar.gz
+wget https://downloads.unidata.ucar.edu/netcdf-fortran/4.5.4/netcdf-fortran-4.5.4.tar.gz
+
 
 wget --no-check-certificate http://www2.mmm.ucar.edu/wrf/src/WRFV3.9.1.1.TAR.gz 
 wget --no-check-certificate http://www2.mmm.ucar.edu/wrf/src/WPSV3.9.1.TAR.gz 
