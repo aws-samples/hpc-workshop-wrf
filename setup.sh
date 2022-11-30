@@ -19,30 +19,16 @@ export FC=gfortran
 export FCFLAGS=-m64
 export F77=gfortran
 export FFLAGS=-m64
-export JASPERLIB=${shared_folder}/gccWRF/grib2/lib
-export JASPERINC=${shared_folder}/gccWRF/grib2/include
-export LDFLAGS=-L${shared_folder}/gccWRF/grib2/lib
-export CPPFLAGS=-I${shared_folder}/gccWRF/grib2/include
-export PATH=${shared_folder}/gccWRF/netcdf/bin:${shared_folder}/gccWRF/bin:\$PATH
-export NETCDF=${shared_folder}/gccWRF/netcdf
-export JASPERLIB=${shared_folder}/gccWRF/grib2/lib
-export JASPERINC=${shared_folder}/gccWRF/grib2/include
+export PATH=${shared_folder}/gccWRF/bin:\$PATH
 export TARGET_DIR=\${SHARED_DIR}/FORECAST/domains/test/
 export GEOG_BASE_DIR=\${SHARED_DIR}/FORECAST/domains/
+
 export WRF_DIR=\${DIR}/WRFV3-3.9.1.1
 export WPS_DIR=\${DIR}/WPS
 export KMP_STACKSIZE=128M
 export KMP_AFFINITY=granularity=fine,compact,1,0
 export OMP_NUM_THREADS=2
 
-module unload intelmpi
-
-module load intelmpi
-#Work Around for Module Load
-#/usr/bin/modulecmd bash load intelmpi
-#export LIBRARY_PATH=/opt/intel/impi/2019.7.217/intel64/libfabric/lib
-#export LD_LIBRARY_PATH=/opt/intel/impi/2019.7.217/intel64/libfabric/lib:/opt/intel/impi/2019.7.217/intel64/lib/release:/opt/intel/impi/2019.7.217/intel64/lib
-#export PATH=/opt/intel/impi/2019.7.217/intel64/libfabric/bin:/opt/intel/impi/2019.7.217/intel64/bin:\$PATH
 
 @EOF
 
@@ -59,10 +45,7 @@ case ${cfn_node_type} in
                 echo "I am the HeadNode node"
                 create_env_file
                 source ${shared_folder}/setup_env.sh
-                cd wrf_setup_scripts
-                /bin/su ec2-user -c "/bin/bash -i compile_and_install.sh"
-                /bin/su ec2-user -c "/bin/bash -i build_dir.sh"
-
+                echo "#TODO Download Install and patch spack to speed-up build"
         ;;
         ComputeFleet)
                 echo "I am a Compute node"
