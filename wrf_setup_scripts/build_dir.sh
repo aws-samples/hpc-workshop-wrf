@@ -7,11 +7,12 @@ mkdir -p ${TARGET_DIR}/log
 
 cp -a ${WRF_DIR}/run  ${TARGET_DIR}
 cd  ${TARGET_DIR}/run
-rm ndown.exe real.exe tc.exe wrf.exe
+rm ndown.exe real.exe tc.exe wrf.exe MPTABLE.TBL 
 ln -s  ${WRF_DIR}/main/ndown.exe ndown.exe
 ln -s  ${WRF_DIR}/main/real.exe real.exe
 ln -s  ${WRF_DIR}/main/tc.exe tc.exe
 ln -s  ${WRF_DIR}/main/wrf.exe wrf.exe
+ln -s  ${WRF_DIR}/phys/noahmp/parameters/MPTABLE.TBL MPTABLE.TBL
 
 #Copy WPS Files and links
 mkdir ${TARGET_DIR}/preproc

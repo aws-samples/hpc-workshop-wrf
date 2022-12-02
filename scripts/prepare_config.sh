@@ -146,6 +146,7 @@ cat<<EOF >namelist.input
  feedback                 = $fdbck,
  numtiles                 = 8,
  smooth_option            = $smooth,
+ sfcp_to_sfcp             = .true.,
  /
 
  &physics
@@ -169,6 +170,7 @@ cat<<EOF >namelist.input
  maxens2                             = 3,
  maxens3                             = 16,
  ensdim                              = 144,
+ ghg_input                           = 1,
  /
 
  &fdda

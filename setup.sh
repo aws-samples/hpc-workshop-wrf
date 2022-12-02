@@ -16,26 +16,22 @@ export SCRIPTDIR=${shared_folder}/gccWRF/bin
 export CC=gcc
 export CXX=g++
 export FC=gfortran
-export FCFLAGS=-m64
 export F77=gfortran
-export FFLAGS=-m64
 export PATH=${shared_folder}/gccWRF/bin:\$PATH
 export TARGET_DIR=\${SHARED_DIR}/FORECAST/domains/test/
 export GEOG_BASE_DIR=\${SHARED_DIR}/FORECAST/domains/
 
-export WRF_DIR=\${DIR}/WRFV3-3.9.1.1
-export WPS_DIR=\${DIR}/WPS
-export KMP_STACKSIZE=128M
-export KMP_AFFINITY=granularity=fine,compact,1,0
 export OMP_NUM_THREADS=2
 
 
 @EOF
 
 chmod 777 ${shared_folder}
-chmod 755 ${shared_folder}/gcc_setup_env.sh
+chmod 777 ${shared_folder}/gcc_setup_env.sh
 rm -f ${shared_folder}/setup_env.sh
 ln -s ${shared_folder}/gcc_setup_env.sh ${shared_folder}/setup_env.sh
+mkdir ${shared_folder}/download
+chmod 777 ${shared_folder}/download
 }
 
 echo "NODE TYPE: ${cfn_node_type}"
