@@ -1,16 +1,11 @@
-#!/bin/bash
+#!/bin/bash 
+#SBATCH --error=job.err
+#SBATCH --output=job.out
+#SBATCH --time=24:00:00
+#SBATCH --job-name=wrf
+#SBATCH --nodes=6
+#SBATCH --ntasks-per-node=63
+#SBATCH --cpus-per-task=1
 
-source /shared/setup_env.sh
-cd ${TARGET_DIR}/run
-echo "#################################"
-env
-echo "#################################"
-echo  $SLURM_JOB_NODELIST
-echo "#################################"
-
-#Each process uses 2 threads and only phisical cores
-let PROCESS=SLURM_NTASKS/2
-PPN=18                 #c5n.18xlarge
-export OMP_NUM_THREADS=2
-echo "Processes $PROCESS"
-time mpiexec.hydra -bootstrap slurm -np $PROCESS -ppn 18 ./wrf.exe
+cd /shared/FORECAST/domains/test/run
+mpirun  ./wrf.exe

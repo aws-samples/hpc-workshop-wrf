@@ -239,7 +239,7 @@ cd $WRFWORK
 
 We are now ready to submit a WRF job using pre-installed scheduler (i.e. SLURM)
 ```bash
-sbatch --ntasks 72  ${SCRIPTDIR}/slurm_run_wrf.sh
+srun -N 6 --ntasks-per-node 64  --mpi=pmix ./wrf.exe
 ```
 With this statement we are asking to the scheduler to run the job on a 72 physical cores,
 integration among scheduler and AWS ParallelCluster checks if thre are enough resoruces to accomodate this job and, if not, spin up a number of new instances according to job needs.

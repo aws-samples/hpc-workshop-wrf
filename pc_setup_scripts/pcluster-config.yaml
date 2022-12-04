@@ -1,0 +1,44 @@
+Region: eu-west-1
+Image:
+  Os: alinux2
+HeadNode:
+  InstanceType: c6gn.xlarge
+  #DisableSimultaneousMultithreading: true
+  Networking:
+    SubnetId: subnet-ce9a7ca8
+  LocalStorage:
+    RootVolume:
+       Size: 100
+       VolumeType: gp3
+  Ssh:
+    KeyName: dalessiofkey
+  Dcv:
+    Enabled: true
+
+  CustomActions:
+    OnNodeConfigured:
+      Script: https://raw.githubusercontent.com/spack/spack-configs/main/AWS/parallelcluster/postinstall.sh
+SharedStorage:
+  - MountDir: /shared
+    Name: shared  
+    StorageType: Ebs
+    EbsSettings:
+       VolumeType: gp3
+       Size: 100
+    
+Scheduling:
+  Scheduler: slurm
+  SlurmQueues:
+  - Name: c5n
+    ComputeResources:
+    - Name: c5n
+      InstanceType: c6gn.16xlarge
+      MinCount: 0
+      MaxCount: 6
+      Efa:
+        Enabled: true
+    Networking:
+      SubnetIds:
+      - subnet-ce9a7ca8
+      PlacementGroup:
+        Enabled: true
