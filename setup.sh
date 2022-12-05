@@ -8,6 +8,14 @@ function create_env_file {
 echo "Create Env"
 cat <<@EOF >${shared_folder}/gcc_setup_env.sh
 #!/bin/bash
+
+if [ ! -z $WRF_ENV ]
+then
+        echo "ENV already loadad"
+        return
+fi
+export WRF_ENV=true
+
 export SHARED_DIR=${shared_folder}
 export SETUP_DIR=${shared_folder}/hpc-workshop-wrf
 export BUILDDIR=${shared_folder}/build/WRF
@@ -33,8 +41,8 @@ ln -s ${shared_folder}/gcc_setup_env.sh ${shared_folder}/setup_env.sh
 
 mkdir ${shared_folder}/download
 chmod 777 ${shared_folder}/download
-mkdir -p ${shared_folder}/WRF
-chmod 777 ${shared_folder}/WRF
+mkdir -p ${shared_folder}/WRF/bin
+chmod -R 777 ${shared_folder}/WRF
 }
 
 echo "NODE TYPE: ${cfn_node_type}"

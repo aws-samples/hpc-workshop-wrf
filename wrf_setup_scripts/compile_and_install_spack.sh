@@ -37,7 +37,7 @@ then
     patch --fuzz 3 makefile < ${SETUP_DIR}/wrf_setup_scripts/wgrib_makefile.patch
     make
     cp wgrib2/wgrib2  $DIR/bin
-    @EOF
+@EOF
 else
     echo "Unsupported Architecture $ARCH"
     exit 1
