@@ -33,8 +33,8 @@ ln -s ${shared_folder}/gcc_setup_env.sh ${shared_folder}/setup_env.sh
 
 mkdir ${shared_folder}/download
 chmod 777 ${shared_folder}/download
-mkdir -p $DIR
-chmod 777 $DIR
+mkdir -p ${shared_folder}/WRF
+chmod 777 ${shared_folder}/WRF
 }
 
 echo "NODE TYPE: ${cfn_node_type}"
