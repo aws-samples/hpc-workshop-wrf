@@ -49,9 +49,9 @@ packages:
     bash <<@EOF
     export FC=gfortran
     export COMP_SYS=gnu_linux
-    export NETCDF=$(spack location -i netcdf-fortran)
+    export NETCDF=\$(spack location -i netcdf-c)
     export JASPERDIR=\$(spack location -i jasper)    
-    export CPPFLAGS="-I\$NETCFD/include/ -I\$JASPERDIR/include  -L\$NETCFD/lib/ -L\$JASPERDIR/lib/"
+    export CPPFLAGS="-I\$NETCDF/include/ -I\$JASPERDIR/include  -L\$NETCDF/lib/ -L\$JASPERDIR/lib/"
     echo "makefile < ${SETUP_DIR}/wgrib_makefile.patch"
     patch --fuzz 3 makefile < ${SETUP_DIR}/wrf_setup_scripts/wgrib_makefile.patch
     make
