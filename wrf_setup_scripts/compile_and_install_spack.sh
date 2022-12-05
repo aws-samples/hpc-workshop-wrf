@@ -15,8 +15,8 @@ then
 elif [ $ARCH = "aarch64" ]
 then
     #Remove mirrors.yaml because of errors during build
-    mv ${SHARED_DIR}/spack/etc/spack/mirrprs.yaml ${SHARED_DIR}/spack/etc/spack/mirrprs.yaml.old
-    touch ${SHARED_DIR}/spack/etc/spack/mirrprs.yaml
+    mv ${SHARED_DIR}/spack/etc/spack/mirrors.yaml ${SHARED_DIR}/spack/etc/spack/mirrors.yaml.old
+    touch ${SHARED_DIR}/spack/etc/spack/mirrors.yaml
 
     #Update packages.yaml to avoid rebuildling already installed componentis
     mv ${SHARED_DIR}/spack/etc/spack/packages.yaml ${SHARED_DIR}/spack/etc/spack/packages.yaml.old
