@@ -20,7 +20,7 @@ then
 
     #Update packages.yaml to avoid rebuildling already installed componentis
     mv ${SHARED_DIR}/spack/etc/spack/packages.yaml ${SHARED_DIR}/spack/etc/spack/packages.yaml.old
-    cat <<@EOF > ${SHARED_DIR}/spack/etc/spack/packages.yaml
+    cat <<@PKEOF > ${SHARED_DIR}/spack/etc/spack/packages.yaml
 packages:
   zlib:
     externals:
@@ -31,7 +31,7 @@ packages:
     - spec: openmpi@4.1.1-2
       prefix: /opt/amazon/openmpi
       buildable: false
-@EOF    
+@PKEOF
     cat ${SHARED_DIR}/spack/etc/spack/packages.yaml.old| grep -v '^packages:' >> ${SHARED_DIR}/spack/etc/spack/packages.yaml
     
     time spack install wps   #This is going to install WPS and WRF
