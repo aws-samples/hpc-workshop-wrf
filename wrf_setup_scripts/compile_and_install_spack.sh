@@ -9,9 +9,9 @@ ARCH=$(uname -m)
 if [ $ARCH = "x86_64"]
 then
     time spack install wps %intel ^intel-oneapi-mpi #This is going to install WPS and WRF
-    time spack install ncview
+    time spack install ncview%intel
     time spack install wgrib2%intel 
-    
+    ARCH_CONFIG=spack load wgrib2%intel
 elif [ $ARCH = "aarch64"]
 then
 
@@ -59,6 +59,7 @@ export NETCDFRLIB=\$NETCDF/lib
 export NETCDFINC=\$NETCDF/include
 export JASPERLIB=\$JASPER/lib
 export JASPERINC=\$JASPER/include
+export LD_LIBRARY_PATH=\${NETCDFRLIB}:\${JASPERLIB}:\$LD_LIBRARY_PATH
 
 @EOF
 
