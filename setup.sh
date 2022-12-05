@@ -10,9 +10,9 @@ cat <<@EOF >${shared_folder}/gcc_setup_env.sh
 #!/bin/bash
 export SHARED_DIR=${shared_folder}
 export SETUP_DIR=${shared_folder}/hpc-workshop-wrf
-export BUILDDIR=${shared_folder}/build/gccWRF
-export DIR=${shared_folder}/gccWRF
-export SCRIPTDIR=${shared_folder}/gccWRF/bin
+export BUILDDIR=${shared_folder}/build/WRF
+export DIR=${shared_folder}/WRF
+export SCRIPTDIR=${shared_folder}/WRF/bin
 export CC=gcc
 export CXX=g++
 export FC=gfortran
@@ -30,8 +30,11 @@ chmod 777 ${shared_folder}
 chmod 777 ${shared_folder}/gcc_setup_env.sh
 rm -f ${shared_folder}/setup_env.sh
 ln -s ${shared_folder}/gcc_setup_env.sh ${shared_folder}/setup_env.sh
+
 mkdir ${shared_folder}/download
 chmod 777 ${shared_folder}/download
+mkdir -p $DIR
+chmod 777 $DIR
 }
 
 echo "NODE TYPE: ${cfn_node_type}"

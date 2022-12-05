@@ -3,6 +3,7 @@
 
 source /shared/setup_env.sh
 
+
 ARCH=$(uname -m)
 #Build packages
 if [ $ARCH = "x86_64"]
@@ -13,12 +14,13 @@ then
     
 elif [ $ARCH = "aarch64"]
 then
+
     time spack install wps   #This is going to install WPS and WRF
-    
     spack install ncview
     
     #spack install    wgrib2
     #Manual install wgrib2 because of spack open issue on Graviton2
+    mkdir -p ${BUILDDIR}
     cd ${shared_folder}/download
     wget ftp://ftp.cpc.ncep.noaa.gov/wd51we/wgrib2/wgrib2.tgz
     ################## COMPILE wgrib2  ################################################
@@ -51,12 +53,12 @@ spack load ncview
 export WRF_DIR=\$(spack location -i wrf)
 export WPS_DIR=\$(spack location -i wps)
 export NETCDF=\$(spack location -i netcdf-fortran)
-export JASPERDIR=\$(spack location -i jasper)
+export JASPER=\$(spack location -i jasper)
 
-export JASPERLIB=\$JASPERDIR/lib
-export JASPERINC=\$JASPERDIR/include
+export NETCDFRLIB=\$NETCDF/lib
+export NETCDFINC=\$NETCDF/include
+export JASPERLIB=\$JASPER/lib
+export JASPERINC=\$JASPER/include
 
-
-export 
 @EOF
 
