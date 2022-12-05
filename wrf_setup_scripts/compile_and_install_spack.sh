@@ -6,13 +6,13 @@ source /shared/setup_env.sh
 
 ARCH=$(uname -m)
 #Build packages
-if [ $ARCH = "x86_64"]
+if [ $ARCH = "x86_64" ]
 then
     time spack install wps %intel ^intel-oneapi-mpi #This is going to install WPS and WRF
     time spack install ncview%intel
     time spack install wgrib2%intel 
     ARCH_CONFIG=spack load wgrib2%intel
-elif [ $ARCH = "aarch64"]
+elif [ $ARCH = "aarch64" ]
 then
     #Remove mirrors.yaml because of errors during build
     mv ${shared_folder}/spack/etc/spack/mirrprs.yaml ${shared_folder}/spack/etc/spack/mirrprs.yaml.old
