@@ -15,12 +15,12 @@ then
 elif [ $ARCH = "aarch64" ]
 then
     #Remove mirrors.yaml because of errors during build
-    mv ${shared_folder}/spack/etc/spack/mirrprs.yaml ${shared_folder}/spack/etc/spack/mirrprs.yaml.old
-    touch ${shared_folder}/spack/etc/spack/mirrprs.yaml
+    mv ${SHARED_DIR}/spack/etc/spack/mirrprs.yaml ${SHARED_DIR}/spack/etc/spack/mirrprs.yaml.old
+    touch ${SHARED_DIR}/spack/etc/spack/mirrprs.yaml
 
     #Update packages.yaml to avoid rebuildling already installed componentis
-    mv ${shared_folder}/spack/etc/spack/packages.yaml ${shared_folder}/spack/etc/spack/packages.yaml.old
-    cat <<@EOF > ${shared_folder}/spack/etc/spack/packages.yaml
+    mv ${SHARED_DIR}/spack/etc/spack/packages.yaml ${SHARED_DIR}/spack/etc/spack/packages.yaml.old
+    cat <<@EOF > ${SHARED_DIR}/spack/etc/spack/packages.yaml
 packages:
   zlib:
     externals:
@@ -32,7 +32,7 @@ packages:
       prefix: /opt/amazon/openmpi
       buildable: false
 @EOF    
-    cat ${shared_folder}/spack/etc/spack/packages.yaml.old| grep -v '^packages:' >> ${shared_folder}/spack/etc/spack/packages.yaml
+    cat ${SHARED_DIR}/spack/etc/spack/packages.yaml.old| grep -v '^packages:' >> ${SHARED_DIR}/spack/etc/spack/packages.yaml
     
     time spack install wps   #This is going to install WPS and WRF
     spack install ncview
@@ -40,7 +40,7 @@ packages:
     #spack install    wgrib2
     #Manual install wgrib2 because of spack open issue on Graviton2
     mkdir -p ${BUILDDIR}
-    cd ${shared_folder}/download
+    cd ${SHARED_DIR}/download
     wget ftp://ftp.cpc.ncep.noaa.gov/wd51we/wgrib2/wgrib2.tgz
     ################## COMPILE wgrib2  ################################################
     cd $BUILDDIR
