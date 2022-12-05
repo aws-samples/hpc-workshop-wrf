@@ -25,7 +25,7 @@ export CC=gcc
 export CXX=g++
 export FC=gfortran
 export F77=gfortran
-export PATH=${shared_folder}/gccWRF/bin:\$PATH
+export PATH=${shared_folder}/WRF/bin:\$PATH
 export TARGET_DIR=\${SHARED_DIR}/FORECAST/domains/test/
 export GEOG_BASE_DIR=\${SHARED_DIR}/FORECAST/domains/
 
