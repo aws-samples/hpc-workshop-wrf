@@ -37,6 +37,7 @@ then
     patch --fuzz 3 makefile < ${SETUP_DIR}/wrf_setup_scripts/wgrib_makefile.patch
     make
     cp wgrib2/wgrib2  $DIR/bin
+    ARCH_CONFIG=""
 @EOF
 else
     echo "Unsupported Architecture $ARCH"
@@ -49,6 +50,7 @@ spack load wrf
 spack load wps
 spack load ncview
 
+$ARCH_CONFIG
 
 export WRF_DIR=\$(spack location -i wrf)
 export WPS_DIR=\$(spack location -i wps)
