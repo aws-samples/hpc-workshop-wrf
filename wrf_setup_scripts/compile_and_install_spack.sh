@@ -14,7 +14,26 @@ then
     ARCH_CONFIG=spack load wgrib2%intel
 elif [ $ARCH = "aarch64"]
 then
+    #Remove mirrors.yaml because of errors during build
+    mv ${shared_folder}/spack/etc/spack/mirrprs.yaml ${shared_folder}/spack/etc/spack/mirrprs.yaml.old
+    touch ${shared_folder}/spack/etc/spack/mirrprs.yaml
 
+    #Update packages.yaml to avoid rebuildling already installed componentis
+    mv ${shared_folder}/spack/etc/spack/packages.yaml ${shared_folder}/spack/etc/spack/packages.yaml.old
+    cat <<@EOF > ${shared_folder}/spack/etc/spack/packages.yaml
+packages:
+  zlib:
+    externals:
+      - spec: zlib@1.2.7
+        prefix: /usr
+  openmpi:
+    externals:
+    - spec: openmpi@4.1.1-2
+      prefix: /opt/amazon/openmpi
+      buildable: false
+@EOF    
+    cat ${shared_folder}/spack/etc/spack/packages.yaml.old| grep -v '^packages:' >> ${shared_folder}/spack/etc/spack/packages.yaml
+    
     time spack install wps   #This is going to install WPS and WRF
     spack install ncview
     
