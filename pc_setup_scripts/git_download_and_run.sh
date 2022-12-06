@@ -18,7 +18,8 @@ case ${cfn_node_type} in
                 echo "I am the HeadNode node"
                 cd ${shared_folder}
                 git clone ${github_repo}
-                cd ${shared_folder}/${github_repo}
+                REPO_FOLDER=$(basename ${github_repo} | cut -f 1 -d '.')
+                cd ${shared_folder}/${REPO_FOLDER}
                 git checkout pcv3-vrfv4
         ;;
         ComputeFleet)

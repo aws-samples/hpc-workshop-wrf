@@ -20,7 +20,7 @@ then
 
     #Update packages.yaml to avoid rebuildling already installed componentis
     mv ${SHARED_DIR}/spack/etc/spack/packages.yaml ${SHARED_DIR}/spack/etc/spack/packages.yaml.old
-    python3 ./update_packages_yaml.py  ${SHARED_DIR}/spack/etc/spack/packages.yaml.old > mv ${SHARED_DIR}/spack/etc/spack/packages.yaml
+    python3 ${SHARED_DIR}/hpc-workshop-wrf/wrf_setup_scripts/update_packages_yaml.py  ${SHARED_DIR}/spack/etc/spack/packages.yaml.old > mv ${SHARED_DIR}/spack/etc/spack/packages.yaml
 
     spack install wps   #This is going to install WPS and WRF
     spack install ncview
