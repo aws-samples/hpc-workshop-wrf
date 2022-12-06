@@ -2,7 +2,7 @@ Region: eu-west-1
 Image:
   Os: alinux2
 HeadNode:
-  InstanceType: c6gn.xlarge
+  InstanceType: c6gn.2xlarge
   #DisableSimultaneousMultithreading: true
   Networking:
     SubnetId: subnet-ce9a7ca8
@@ -17,7 +17,10 @@ HeadNode:
 
   CustomActions:
     OnNodeConfigured:
-      Script: https://raw.githubusercontent.com/spack/spack-configs/main/AWS/parallelcluster/postinstall.sh
+      Script: https://raw.githubusercontent.com/aws-samples/hpc-workshop-wrf/pcv3-vrfv4/pc_setup_scripts/git_download_and_run.sh
+      Args:
+        - https://github.com/aws-samples/hpc-workshop-wrf.git,setup.sh
+ 
 SharedStorage:
   - MountDir: /shared
     Name: shared  
@@ -29,9 +32,9 @@ SharedStorage:
 Scheduling:
   Scheduler: slurm
   SlurmQueues:
-  - Name: c5n
+  - Name: c6gn
     ComputeResources:
-    - Name: c5n
+    - Name: c6gn
       InstanceType: c6gn.16xlarge
       MinCount: 0
       MaxCount: 6
