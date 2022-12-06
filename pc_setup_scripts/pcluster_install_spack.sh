@@ -3,7 +3,8 @@ set -e
 
 ##
 # Modified version of: https://raw.githubusercontent.com/spack/spack-configs/main/AWS/parallelcluster/postinstall.sh
-##
+# Removed gcc compiler install to reduce cluster start-up time
+#
 ##############################################################################################
 # # This script will setup Spack and best practices for a few applications.                  #
 # # Use as postinstall in AWS ParallelCluster (https://docs.aws.amazon.com/parallelcluster/) #

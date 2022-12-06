@@ -53,9 +53,8 @@ case ${cfn_node_type} in
                 create_env_file
                 source ${shared_folder}/setup_env.sh
                 cd ${shared_folder}
-                wget https://raw.githubusercontent.com/spack/spack-configs/main/AWS/parallelcluster/postinstall.sh
+                bash ${shared_folder}/hpc-workshop-wrf/pc_setup_scripts/pcluster_install_spack.sh
                 
-                echo "#TODO Download Install and patch spack to speed-up build"
         ;;
         ComputeFleet)
                 echo "I am a Compute node"
