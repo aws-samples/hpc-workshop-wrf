@@ -9,7 +9,7 @@ echo "Create Env"
 cat <<@EOF >${shared_folder}/gcc_setup_env.sh
 #!/bin/bash
 
-if [ ! -z $WRF_ENV ]
+if [ ! -z \$WRF_ENV ]
 then
         echo "ENV already loadad"
         return
@@ -52,6 +52,9 @@ case ${cfn_node_type} in
                 echo "I am the HeadNode node"
                 create_env_file
                 source ${shared_folder}/setup_env.sh
+                cd ${shared_folder}
+                wget https://raw.githubusercontent.com/spack/spack-configs/main/AWS/parallelcluster/postinstall.sh
+                
                 echo "#TODO Download Install and patch spack to speed-up build"
         ;;
         ComputeFleet)
