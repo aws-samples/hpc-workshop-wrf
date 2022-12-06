@@ -16,9 +16,10 @@ def main(argv):
             if 'externals' in data['packages'][package]:
               data['packages'][package]['externals'][0]['buildable']= False
              
-        #Add openMPI and zlib to already installed packages
+        #Add openMPI, zlib and perl to already installed packages to reduce compile time
         data['packages']['openmpi']={'externals':[{'spec':'openmpi@4.1.4', 'prefix': '/opt/amazon/openmpi','buildable': False}]}
-        data['packages']['zlib']={'externals':[{'spec':'zlib@1.2.7', 'prefix': '/opt/usr','buildable': False}]}
+        data['packages']['zlib']={'externals':[{'spec':'zlib@1.2.7', 'prefix': '/usr','buildable': False}]}
+        data['packages']['perl']={'externals':[{'spec':'perl@5.16.3', 'prefix': '/usr','buildable': False}]}
         
         print (yaml.dump(data))
 
