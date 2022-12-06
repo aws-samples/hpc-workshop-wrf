@@ -61,7 +61,7 @@ $ARCH_CONFIG
 
 export WRF_DIR=\$(spack location -i wrf)
 export WPS_DIR=\$(spack location -i wps)
-export NETCDF=\$(spack location -i netcdf-fortran)
+export NETCDF=\$(spack location -i netcdf-c)
 export JASPER=\$(spack location -i jasper)
 
 export NETCDFRLIB=\$NETCDF/lib
