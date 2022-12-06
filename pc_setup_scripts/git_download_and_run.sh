@@ -18,6 +18,8 @@ case ${cfn_node_type} in
                 echo "I am the HeadNode node"
                 cd ${shared_folder}
                 git clone ${github_repo}
+                cd ${shared_folder}/${github_repo}
+                git checkout pcv3-vrfv4
         ;;
         ComputeFleet)
                 echo "I am a Compute node"
