@@ -35,8 +35,7 @@ def main(argv):
         data['packages']['cmake']={'externals':[{'spec':'cmake@2.8.12', 'prefix': '/usr','buildable': False}]}
         data['packages']['bison']={'externals':[{'spec':'bison@3.0.4', 'prefix': '/usr','buildable': False}]}
         data['packages']['libtool']={'externals':[{'spec':'libtool@2.4.2', 'prefix': '/usr','buildable': False}]}
-        data['packages']['gettext']={'externals':[{'spec':'gettext@0.19.8', 'prefix': '/usr','buildable': False}]}
-        data['packages']['jpeg-turbo']={'externals':[{'spec':'jpeg-turbo@2.0.90', 'prefix': '/usr','buildable': False}]}
+        #data['packages']['gettext']={'externals':[{'spec':'gettext@0.19.8', 'prefix': '/usr','buildable': False}]}
         
         
         print (yaml.dump(data))
