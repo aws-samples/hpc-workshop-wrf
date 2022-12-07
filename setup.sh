@@ -14,7 +14,7 @@ then
         echo "ENV already loadad"
         return
 fi
-export WRF_ENV=true
+
 
 export SHARED_DIR=${shared_folder}
 export SETUP_DIR=${shared_folder}/hpc-workshop-wrf

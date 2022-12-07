@@ -71,5 +71,6 @@ export JASPERLIB=\$JASPER/lib64
 export JASPERINC=\$JASPER/include
 export LD_LIBRARY_PATH=\${NETCDFRLIB}:\${JASPERLIB}:\$LD_LIBRARY_PATH
 
+export WRF_ENV=true
 @EOF
 
