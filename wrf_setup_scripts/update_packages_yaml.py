@@ -23,7 +23,6 @@ def main(argv):
         data['packages']['zlib']={'externals':[{'spec':'zlib@1.2.7', 'prefix': '/usr','buildable': False}]}
         data['packages']['xz']={'externals':[{'spec':'xz@5.2.2', 'prefix': '/usr','buildable': False}]}
         data['packages']['krb5']={'externals':[{'spec':'krb5@1.15.1', 'prefix': '/usr','buildable': False}]}
-        data['packages']['gettext']={'externals':[{'spec':'gettext@0.19.8', 'prefix': '/usr','buildable': False}]}
         data['packages']['bison']={'externals':[{'spec':'bison@3.0.4', 'prefix': '/usr','buildable': False}]}
         data['packages']['tcsh']={'externals':[{'spec':'tcsh@6.18.1', 'prefix': '/usr','buildable': False}]}
         data['packages']['pkgconf']={'externals':[{'spec':'pkgconf@0.27.1', 'prefix': '/usr','buildable': False}]}
