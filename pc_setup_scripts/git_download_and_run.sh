@@ -19,7 +19,6 @@ case ${cfn_node_type} in
                 cd ${shared_folder}
                 git clone ${github_repo}
                 REPO_FOLDER=$(basename ${github_repo} | cut -f 1 -d '.')
-                cd ${shared_folder}/${REPO_FOLDER}
 
         ;;
         ComputeFleet)
