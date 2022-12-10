@@ -1,4 +1,4 @@
-# HPC WORKSHOP WRF ON AWS
+# HPC WORKSHOP WRF ON AWS with Graviton2 leveraging SPACK
 
 ## Introduction
 
@@ -15,6 +15,9 @@ that can immediately be used to start running weather forecasts.
 Scripts included in this repo are released under MIT license and perform all required tasks
 to download and compile required dependencies and tools needed to be able to run 
 a full weather forecast from initialization data download to visualization of outcomes.
+
+Spack is a package manager for supercomputers, Linux, and macOS. It makes installing scientific software easy. Spack isn’t tied to a particular language; you can build a software stack in Python or R, link to libraries written in C, C++, or Fortran, and easily swap compilers or target specific microarchitectures. 
+Learn more [here](https://spack.io/about/) 
 
 ## Security
 
@@ -54,54 +57,6 @@ For remaining AWS ParallelCluster configuration parameters we will use the defau
 * Several of these settings will result in higher cost.  Please review [EC2 costs](https://aws.amazon.com/ec2/pricing/) prior creation.  
 * Region has to be selected according to [Amazon Elastic Compute Cloud (EC2) C6gn Instances availability](https://aws.amazon.com/it/about-aws/global-infrastructure/regional-product-services).
 
-```bash
-Region: <AWS_REGION>
-Image:
-  Os: alinux2
-HeadNode:
-  InstanceType: c6gn.xlarge
-  #DisableSimultaneousMultithreading: true
-  Networking:
-    SubnetId: <SUBNET_ID>
-  LocalStorage:
-    RootVolume:
-       Size: 100
-       VolumeType: gp3
-  Ssh:
-    KeyName: <EC2 KEY NAME>
-  Dcv:
-    Enabled: true
-  CustomActions:
-    OnNodeConfigured:
-      Script: https://raw.githubusercontent.com/spack/spack-configs/main/AWS/parallelcluster/postinstall.sh
-SharedStorage:
-  - MountDir: /shared
-    Name: shared  
-    StorageType: Ebs
-    EbsSettings:
-       VolumeType: gp3
-       Size: 100
-    
-Scheduling:
-  Scheduler: slurm
-  SlurmQueues:
-  - Name: c5n
-    ComputeResources:
-    - Name: c5n
-      InstanceType: c6gn.18xlarge
-      MinCount: 0
-      MaxCount: 6
-      Efa:
-        Enabled: true
-    Networking:
-      SubnetIds:
-      - <SUBNET_ID>
-      PlacementGroup:
-        Enabled: true
-```
-### Note
-* If you want to use Intel based instances you can use c5n.xlarge for Master node and c5n.18xlarge for compute node and uncommend *DisableSimultaneousMultithreading* line in config file. No other changes are required.
-
 
 ## Create the cluster
 We are now ready to use AWS ParallelCluster to spin up our new cluster for running weather forecasts by tiping:
@@ -124,13 +79,11 @@ pcluster  dcv-connect -r <AWS REGION> -n wrf-workshop --key-path  <PATH TO EC2 K
 ```
 
 ## Install WRF
-Open a terminal within DCV, go to the filesystem shared across all nodes and download this git repository and start run the install script as root
+Open a terminal within DCV, go to the filesystem shared across all nodes and run the install script
 ```bash
-cd /shared
-git clone https://github.com/aws-samples/hpc-workshop-wrf
+cd /shared/hpc-workshop-wrf/wrf_setup_scripts/
+bash install_wrf.sh
 ```
-
-
 
 
 ## Run a weather forecast simulation
@@ -150,15 +103,8 @@ echo "echo 'WRF ENVIRONMENT INITIALIZED'" >>  ~/.bashrc
 
 ### Download reference data
 In order to be able to run a weather forecast on a specific region we need:
-* Static Geographical Data: How soil is in that region (i.e. lakes, forests, cities, hills, snow, mountains,...) that varies according to seasonality
+* Static Geographical Data: How soil is in that region (i.e. lakes, forests, cities, hills, snow, mountains,...). Since those data do not vary frequently they are downloaded by install_wrf script.
 * Gridded Meteorological Data coming from a large scale, gross grained, forecasting system that will set-up our starting condition.
-
-#### Download soil reference data
-This procedure has to be run once, since soil data are slowly changing over time (i.e.: new cities, deforestation).
-It takes about 1 hour to download and unzip the contents
-```bash
-download_and_install_geog_data.sh
-```
 
 #### Download Gridded Meteorological Data.
 The Global Forecast System (GFS) is a weather forecast model produced by the National Centers for Environmental Prediction (NCEP). 
@@ -188,11 +134,7 @@ In this step, we extract relevant data to us.
 We first set-up some environment variables:
 ```bash
 
-
 ulimit -s unlimited
-
-NP=$(ls /sys/class/cpuid/ | wc -l)
-NP=$(( $NP / 2 ))
 
 day=$(date +%Y%m%d)
 
@@ -208,7 +150,7 @@ rm -f met_em*
 ```
 geogrid extracts relevant soil data from global dataset
 ```bash
-./geogrid.exe > geogrid.$day.log 2>&1
+./geogrid.exe 2>&1 |tee geogrid.$day.log 
 
 ```
 
@@ -219,12 +161,12 @@ cp -f GRIBFILE* $WPSWORK
 
 cd $WPSWORK
 
-./ungrib.exe > ungrib.$day.log 2>&1
+./ungrib.exe 2>&1 |tee ungrib.$day.log 
 
 ```
 and mix them with soil related data
 ```bash
-./metgrid.exe > metgrid.$day.log 2>&1
+./metgrid.exe 2>&1 |tee metgrid.$day.log 
 
 mv met_em* $WRFWORK
 
@@ -234,15 +176,33 @@ mv met_em* $WRFWORK
 Last data preparation step is performed by real.exe that prepares Initial and Boundary Conditions files for later processing.
 ```bash
 cd $WRFWORK
-./real.exe  >real.$day.log 2>&1
+./real.exe  2>&1 |tee real.$day.log 
 ```
 
 We are now ready to submit a WRF job using pre-installed scheduler (i.e. SLURM)
 ```bash
-srun -N 6 --ntasks-per-node 64  --mpi=pmix ./wrf.exe
+sbatch  ${SCRIPTDIR}/slurm_run_wrf.sh
 ```
-With this statement we are asking to the scheduler to run the job on a 72 physical cores,
-integration among scheduler and AWS ParallelCluster checks if thre are enough resoruces to accomodate this job and, if not, spin up a number of new instances according to job needs.
+
+With this statement we are asking to the scheduler to run the job, job details are defined within the slurm_run_wrf script.  
+Hereafter you can see the content of that script.
+```bash
+#!/bin/bash 
+#SBATCH --error=job.err
+#SBATCH --output=job.out
+#SBATCH --time=24:00:00
+#SBATCH --job-name=wrf
+#SBATCH --nodes=4
+#SBATCH --ntasks-per-node=64
+#SBATCH --cpus-per-task=1
+
+cd /shared/FORECAST/domains/test/run
+mpirun  ./wrf.exe
+```
+
+This script requires the scheduler to run a job on 4 nodes, starting 64 process for each node (one per processor).
+You can also try changing those parameter to see how forecast performances are affected.  
+The integration between scheduler and AWS ParallelCluster checks if thre are enough resoruces to accomodate this job and, if not, spin up a number of new instances according to job needs.
 Output and log files are saved under $WRFWORK directory.
 
 We can run the same forecast using a different number of cores in order to be able to understand how WRF scales on AWS.
@@ -278,41 +238,23 @@ Soil Level Temperature (SLT) over time on a specific map point
 ![Soil Level Temperature for a selected poin over Time](./pictures/SoillevelTemperature_over_time.JPG)  
 
 
-### Compiling with Intel using oneAPI HPC Toolkit (Beta) 
-Included in this repo there is also a script that allows compiling WRF using Intel Compilers provided as part of the OneApi Intel preview.
-Time required to compile WRF with Intel compiler is about 40 mintues and can be achieved by issuing the following command:
-```bash
-cd /shared/hpc-workshop-wrf/
-
-sudo bash setup_intel.sh
-```
-In order to perform a forecast using Intel compiled verion, all steps starting from prepare config shall be re-executed after loading the new environment variables:
-```bash
-source /shared/setup_env.sh
-```
-
 
 The following table shows 3 different tests for the same forecast, involving different level of parallelism and using gcc or Intel compiler.
 
-| Number of Processors | WRF Elapsed Time (gcc) | WRF Elapsed Time (Intel) |
-|----------------------|:----------------------:|-------------------------:|
-|         72 (2 nodes) |            5544 sec.   |               3220 sec.  |
-|        144 (4 nodes) |            3022 sec.   |               1989 sec.  |
-|        216 (6 nodes) |            2304 sec.   |               1575 sec.  |
-
+| Number of Cores      | WRF Elapsed Time (gcc) | 
+|----------------------|:----------------------:|
+|        128 (2 nodes) |            6000 sec.   |
+|        256 (4 nodes) |            3500 sec.   |
+|        216 (6 nodes) |            2604 sec.   |
 
 
 
 ### Cluster Cleanup
 To remove the cluster we can use the following command issued from the parallel cluster console
 ```bash
-pcluster delete wrf-workshop
+pcluster delete-cluster -n  wrf-workshop -r <AWS_REGION>
 ```
 
 This command deletes the Head node and you will loose any forecast data.
 The Head node can also be simply switched off when not used and switched on again 
 to start processing a new forecast.
-Last thing to remove is the s3 bucket used to store AWS Paralelcluster post install script.
-```bash
-aws s3 rb  s3://${BUCKET_NAME} --force --region=${REGION}
-```
