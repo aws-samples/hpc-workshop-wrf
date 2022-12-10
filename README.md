@@ -16,7 +16,7 @@ Scripts included in this repo are released under MIT license and perform all req
 to download and compile required dependencies and tools needed to be able to run 
 a full weather forecast from initialization data download to visualization of outcomes.
 
-Spack is a package manager for supercomputers, Linux, and macOS. It makes installing scientific software easy. Spack isn’t tied to a particular language; you can build a software stack in Python or R, link to libraries written in C, C++, or Fortran, and easily swap compilers or target specific microarchitectures. 
+**Spack** is a package manager for supercomputers, Linux, and macOS. It makes installing scientific software easy. Spack isn’t tied to a particular language; you can build a software stack in Python or R, link to libraries written in C, C++, or Fortran, and easily swap compilers or target specific microarchitectures.  
 Learn more [here](https://spack.io/about/) 
 
 ## Security
