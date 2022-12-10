@@ -17,7 +17,7 @@ HeadNode:
 
   CustomActions:
     OnNodeConfigured:
-      Script: https://raw.githubusercontent.com/aws-samples/hpc-workshop-wrf/pcv3-vrfv4/pc_setup_scripts/git_download_and_run.sh
+      Script: https://raw.githubusercontent.com/aws-samples/hpc-workshop-wrf/master/pc_setup_scripts/git_download_and_run.sh
       Args:
         - https://github.com/aws-samples/hpc-workshop-wrf.git,setup.sh
  
