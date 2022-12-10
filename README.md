@@ -40,8 +40,7 @@ cd <PATH-TO-THE-GIT-REPO>
 ```
 
 Now it is time to configure AWS ParallelCluster according to our needs.
-This is done by editing  the template file provided in this repo: *pc_setup_scripts/pcluster-config.template*  
-and adjusting parameters related to AWS account, region and VPC.
+This is done by editing  the template file provided in this repo: *pc_setup_scripts/pcluster-config.template* and adjusting parameters related to AWS account, region and VPC.
 In this template file you will find cluster settings that provides good results with WRF and also for many other tightly coupled compute intensive algorithms, 
 key configuration parameters are:
 * using c6gn.16xlarge instances for compute nodes. Those instances have a low memory to CPU ratio but they have Graviton 2 cpu to optimize simulation cost and reduce carbon footprint and 100 Gbps network interfaces with EFA
