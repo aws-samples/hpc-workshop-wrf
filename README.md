@@ -238,7 +238,7 @@ Soil Level Temperature (SLT) over time on a specific map point
 
 
 
-The following table shows 3 different tests for the same forecast, involving different level of parallelism and using gcc or Intel compiler.
+The following table shows 3 different tests for the same forecast, involving different level of parallelism and using gcc.
 
 | Number of Cores      | WRF Elapsed Time (gcc) | 
 |----------------------|:----------------------:|
