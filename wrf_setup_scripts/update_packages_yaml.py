@@ -10,7 +10,7 @@ def main(argv):
     
     input_file_name=argv[0]
     with open (input_file_name,"r") as F:
-        data = yaml.load(F.read(), Loader=Loader)
+        data = yaml.safe_load(F.read(), Loader=Loader)
         for package in data['packages']:
           if package != 'all':
             if 'externals' in data['packages'][package]:
