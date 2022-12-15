@@ -67,7 +67,7 @@ pcluster  create-cluster -r <AWS_REGION>  -n wrf-workshop -c $HOME/.parallelclus
 
 AWS ParallelCluster will create the components highlighted in the following picture, by leveraging AWS CloudFormation:  
 ![AWS ParallelCluster architecture overview](./pictures/ParallelClusterArchitecture.png)    
-Cluster spin-up will require approximately 30 minutes due to download of WRF source components and following compile and build process.
+Cluster spin-up will require approximately 30 minutes due to download and install spack.
 
 
 ## Log into the cluster using DCV
@@ -83,7 +83,7 @@ Open a terminal within DCV, go to the filesystem shared across all nodes and run
 cd /shared/hpc-workshop-wrf/wrf_setup_scripts/
 bash install_wrf.sh
 ```
-
+This script leverages spack to install all required software: wps, wgrib, wrf and ncview. It will take about 50 minutes to complete the download, compile and install steps.  
 
 ## Run a weather forecast simulation
 
