@@ -244,7 +244,7 @@ The following table shows 3 different tests for the same forecast, involving dif
 |----------------------|:----------------------:|
 |        128 (2 nodes) |            6000 sec.   |
 |        256 (4 nodes) |            3500 sec.   |
-|        216 (6 nodes) |            2604 sec.   |
+|        216 (6 nodes) |            2600 sec.   |
 
 
 
