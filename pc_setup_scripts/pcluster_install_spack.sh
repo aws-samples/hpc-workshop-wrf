@@ -5,55 +5,96 @@ set -e
 # Modified version of: https://raw.githubusercontent.com/spack/spack-configs/main/AWS/parallelcluster/postinstall.sh
 # Removed gcc compiler install to reduce cluster start-up time
 #
+
 ##############################################################################################
 # # This script will setup Spack and best practices for a few applications.                  #
 # # Use as postinstall in AWS ParallelCluster (https://docs.aws.amazon.com/parallelcluster/) #
 ##############################################################################################
 
-# TODO: Once https://github.com/archspec/archspec-json/pull/57 makes it into Spack we need to rename: graviton2 -> neoverse_n1, graviton3 -> neoverse_v1
+install_in_foreground=false
+while [ $# -gt 0 ]; do
+    case $1 in
+        -v )
+            set -v
+            shift
+            ;;
+        -fg )
+            install_in_foreground=true
+            shift
+            ;;
+        -nointel )
+            export NO_INTEL_COMPILER=1
+            shift
+            ;;
+        * )
+            echo "Unknown argument: $1"
+            exit 1
+            ;;
+    esac
+done
 
-# Install onto first shared storage device
-cluster_config="/opt/parallelcluster/shared/cluster-config.yaml"
-[ -f "${cluster_config}" ] && {
-    os=$(python << EOF
+setup_variables() {
+    # Install onto first shared storage device
+    cluster_config="/opt/parallelcluster/shared/cluster-config.yaml"
+    if [ -f "${cluster_config}" ]; then
+        pip3 install pyyaml
+        os=$(python3 << EOF
 #/usr/bin/env python
 import yaml
 with open("${cluster_config}", 'r') as s:
     print(yaml.safe_load(s)["Image"]["Os"])
 EOF
-      )
+          )
 
-    case "${os}" in
-        alinux*)
-            cfn_cluster_user="ec2-user"
-            ;;
-        centos*)
-            cfn_cluster_user="centos"
-            ;;
-        ubuntu*)
-            cfn_cluster_user="ubuntu"
-            ;;
-        *)
-            cfn_cluster_user=""
-    esac
+        case "${os}" in
+            alinux*)
+                cfn_cluster_user="ec2-user"
+                ;;
+            centos*)
+                cfn_cluster_user="centos"
+                ;;
+            ubuntu*)
+                cfn_cluster_user="ubuntu"
+                ;;
+            *)
+                cfn_cluster_user=""
+        esac
 
-    cfn_ebs_shared_dirs=$(python << EOF
+        cfn_ebs_shared_dirs=$(python3 << EOF
 #/usr/bin/env python
 import yaml
 with open("${cluster_config}", 'r') as s:
     print(yaml.safe_load(s)["SharedStorage"][0]["MountDir"])
 EOF
-                       )
-} || . /etc/parallelcluster/cfnconfig || {
-    echo "Cannot find ParallelCluster configs"
-    echo "Installing Spack into /shared/spack for ec2-user."
-    cfn_ebs_shared_dirs="/shared"
-    cfn_cluster_user="ec2-user"
-}
+                           )
+        scheduler=$(python3 << EOF
+#/usr/bin/env python
+import yaml
+with open("${cluster_config}", 'r') as s:
+    print(yaml.safe_load(s)["Scheduling"]["Scheduler"])
+EOF
+                 )
+    elif [ -f /etc/parallelcluster/cfnconfig ]; then
+        . /etc/parallelcluster/cfnconfig
+    else
+        echo "Cannot find ParallelCluster configs"
+        cfn_ebs_shared_dirs=""
+    fi
 
-install_path=${SPACK_ROOT:-"${cfn_ebs_shared_dirs}/spack"}
-spack_branch="develop"
-scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    # If we cannot find any shared directory, use $HOME of standard user
+    if [ -z "${cfn_ebs_shared_dirs}" ]; then
+        for cfn_cluster_user in ec2-user centos ubuntu; do
+            [ -d "/home/${cfn_cluster_user}" ] && break
+        done
+        cfn_ebs_shared_dirs="/home/${cfn_cluster_user}"
+    fi
+
+    install_path=${SPACK_ROOT:-"${cfn_ebs_shared_dirs}/spack"}
+    echo "Installing Spack into ${install_path}."
+    spack_branch="develop"
+
+    scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+}
 
 major_version() {
     pcluster_version=$(grep -oE '[0-9]*\.[0-9]*\.[0-9]*' /opt/parallelcluster/.bootstrapped)
@@ -63,19 +104,29 @@ major_version() {
 # Make first user owner of Spack installation when script exits.
 fix_owner() {
     rc=$?
-    if [ -z "${SPACK_ROOT}" ]
+    if [ ${downloaded} -eq 0 ]
     then
         chown -R ${cfn_cluster_user}:${cfn_cluster_user} "${install_path}"
     fi
     exit $rc
 }
-trap "fix_owner" SIGINT EXIT
 
 download_spack() {
     if [ -z "${SPACK_ROOT}" ]
     then
         [ -d ${install_path} ] || \
-            git clone https://github.com/spack/spack -b ${spack_branch} ${install_path}
+            if [ -n "${spack_branch}" ]
+            then
+                git clone https://github.com/spack/spack -b ${spack_branch} ${install_path}
+            elif [ -n "${spack_commit}" ]
+            then
+                git clone https://github.com/spack/spack ${install_path}
+                cd ${install_path} && git checkout ${spack_commit}
+            fi
+        return 0
+    else
+        # Let the script know we did not download spack, so the owner will not be fixed on exit.
+        return 1
     fi
 }
 
@@ -105,25 +156,28 @@ download_packages_yaml() {
             fi
             download_packages_yaml "${target}"
         done
+    else
+        # Exit "for target in ..." loop.
+        break &>/dev/null
     fi
 }
 
 set_pcluster_defaults() {
     # Set versions of pre-installed software in packages.yaml
-    SLURM_VERSION=$(. /etc/profile && sinfo --version | cut -d' ' -f 2 | sed -e 's?\.?-?g')
-    LIBFABRIC_MODULE=$(. /etc/profile && module avail libfabric 2>&1 | grep libfabric | head -n 1 | xargs )
-    LIBFABRIC_MODULE_VERSION=$(. /etc/profile && module avail libfabric 2>&1 | grep libfabric | head -n 1 |  cut -d / -f 2 | sed -e 's?~??g' | xargs )
-    LIBFABRIC_VERSION=${LIBFABRIC_MODULE_VERSION//amzn*}
-    GCC_VERSION=$(gcc -v 2>&1 |tail -n 1| awk '{print $3}' )
+    [ -z "${SLURM_VERSION}" ] && SLURM_VERSION=$(strings /opt/slurm/lib/libslurm.so | grep  -e '^VERSION'  | awk '{print $2}'  | sed -e 's?"??g')
+    [ -z "${LIBFABRIC_MODULE_VERSION}" ] && LIBFABRIC_MODULE_VERSION=$(grep 'Version:' /opt/amazon/efa/lib64/pkgconfig/libfabric.pc | awk '{print $2}')
+    [ -z "${LIBFABRIC_MODULE}" ] && LIBFABRIC_MODULE="libfabric-aws/${LIBFABRIC_MODULE_VERSION}"
+    [ -z "${LIBFABRIC_VERSION}" ] && LIBFABRIC_VERSION=${LIBFABRIC_MODULE_VERSION//amzn*}
+    [ -z "${GCC_VERSION}" ] && GCC_VERSION=$(gcc -v 2>&1 |tail -n 1| awk '{print $3}' )
 
     # Write the above as actual yaml file and only parse the \$.
     mkdir -p ${install_path}/etc/spack
 
     # Find suitable packages.yaml. If not for this architecture then for its parents.
-    download_packages_yaml "$(target)"
+    ( download_packages_yaml "$(target)" )
     eval "echo \"$(cat /tmp/packages.yaml)\"" > ${install_path}/etc/spack/packages.yaml
 
-    for f in mirrors modules config; do
+    for f in modules config; do
         curl -Ls https://raw.githubusercontent.com/spack/spack-configs/main/AWS/parallelcluster/${f}.yaml -o ${install_path}/etc/spack/${f}.yaml
     done
 }
@@ -134,8 +188,18 @@ setup_spack() {
     # Load spack at login
     if [ -z "${SPACK_ROOT}" ]
     then
-        echo ". ${install_path}/share/spack/setup-env.sh" > /etc/profile.d/spack.sh
-        echo ". ${install_path}/share/spack/setup-env.csh" > /etc/profile.d/spack.csh
+        case "${scheduler}" in
+            slurm)
+                echo -e "\n# Spack setup from Github repo spack-configs" >> /opt/slurm/etc/slurm.sh
+                echo -e "\n# Spack setup from Github repo spack-configs" >> /opt/slurm/etc/slurm.csh
+                echo ". ${install_path}/share/spack/setup-env.sh &>/dev/null || true" >> /opt/slurm/etc/slurm.sh
+                echo ". ${install_path}/share/spack/setup-env.csh &>/dev/null || true" >> /opt/slurm/etc/slurm.csh
+                ;;
+            *)
+                echo "WARNING: Spack will need to be loaded manually when ssh-ing to compute instances."
+                echo ". ${install_path}/share/spack/setup-env.sh" > /etc/profile.d/spack.sh
+                echo ". ${install_path}/share/spack/setup-env.csh" > /etc/profile.d/spack.csh
+        esac
     fi
 
     . "${install_path}/share/spack/setup-env.sh"
@@ -145,34 +209,34 @@ setup_spack() {
     # Remove all autotools/buildtools packages. These versions need to be managed by spack or it will
     # eventually end up in a version mismatch (e.g. when compiling gmp).
     spack tags build-tools | xargs -I {} spack config --scope site rm packages:{}
+    [ -z "${CI_PROJECT_DIR}" ] && spack mirror add --scope site "aws-pcluster" "https://binaries.spack.io/develop/aws-pcluster-$(target | sed -e 's?_avx512??1')"
     spack buildcache keys --install --trust
 }
 
 install_packages() {
-    . /etc/profile.d/spack.sh
+    if [ -n "${SPACK_ROOT}" ]; then
+        [ -f /opt/slurm/etc/slurm.sh ] && . /opt/slurm/etc/slurm.sh || . /etc/profile.d/spack.sh
+    fi
 
     # Compiler needed for all kinds of codes. It makes no sense not to install it.
     # Get gcc from buildcache
-    #spack install gcc
-    #(
-    #    spack load gcc
-    #    spack compiler add --scope site
-    #)
+    spack install gcc
+    (
+        spack load gcc
+        spack compiler add --scope site
+    )
 
-    if [ "x86_64" == "$(architecture)" ]
+    if [ -z "${NO_INTEL_COMPILER}" ] && [ "x86_64" == "$(architecture)" ]
     then
         # Add oneapi@latest & intel@latest
         spack install intel-oneapi-compilers-classic
-        (
-            . "$(spack location -i intel-oneapi-compilers)/setvars.sh"
-            spack compiler add --scope site
-        )
+        bash -c ". "$(spack location -i intel-oneapi-compilers)/setvars.sh"; spack compiler add --scope site"
     fi
 
     # Install any specs provided to the script.
     for spec in "$@"
     do
-        spack install -U "${spec}"
+        [ -z "${spec}" ] || spack install -U "${spec}"
     done
 }
 
@@ -181,7 +245,17 @@ if [ "3" != "$(major_version)" ]; then
     exit 1
 fi
 
-download_spack |& tee -a /var/log/spack-postinstall.log
-set_pcluster_defaults |& tee -a /var/log/spack-postinstall.log
-setup_spack |& tee -a /var/log/spack-postinstall.log
-install_packages "$@" |& tee -a /var/log/spack-postinstall.log
+tmpfile=$(mktemp)
+echo "$(declare -pf)
+    trap \"fix_owner\" SIGINT EXIT
+    setup_variables
+    download_spack | true
+    downloaded=\${PIPESTATUS[0]}
+    set_pcluster_defaults
+    setup_spack
+    install_packages \"$@\"
+    echo \"*** Spack setup completed ***\"
+    rm -f ${tmpfile}
+" > ${tmpfile}
+
+bash ${tmpfile}
