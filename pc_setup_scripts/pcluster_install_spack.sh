@@ -220,11 +220,12 @@ install_packages() {
 
     # Compiler needed for all kinds of codes. It makes no sense not to install it.
     # Get gcc from buildcache
-    spack install gcc
-    (
-        spack load gcc
-        spack compiler add --scope site
-    )
+    # AVOID GCC INSTALL TO REDUCE SET-UP TIME
+    #spack install gcc
+    #(
+    #    spack load gcc
+    #    spack compiler add --scope site
+    #)
 
     if [ -z "${NO_INTEL_COMPILER}" ] && [ "x86_64" == "$(architecture)" ]
     then
