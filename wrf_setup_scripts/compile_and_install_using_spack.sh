@@ -30,7 +30,7 @@ then
     #Manual install wgrib2 because of spack open issue on Graviton2
     mkdir -p ${BUILDDIR}
     cd ${SHARED_DIR}/download
-    wget ftp://ftp.cpc.ncep.noaa.gov/wd51we/wgrib2/wgrib2.tgz
+     wget ftp://ftp.cpc.ncep.noaa.gov/wd51we/wgrib2/wgrib2.tgz.v3.1.0 -O wgrib2.tgz
     ################## COMPILE wgrib2  ################################################
     cd $BUILDDIR
     tar -zxvf /shared/download/wgrib2.tgz
