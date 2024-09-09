@@ -164,6 +164,7 @@ download_packages_yaml() {
 
 set_pcluster_defaults() {
     # Set versions of pre-installed software in packages.yaml
+    [ -z "${SLURM_ROOT}" ] && SLURM_ROOT="/opt/slurm"
     [ -z "${SLURM_VERSION}" ] && SLURM_VERSION=$(strings /opt/slurm/lib/libslurm.so | grep  -e '^VERSION'  | awk '{print $2}'  | sed -e 's?"??g')
     [ -z "${LIBFABRIC_MODULE_VERSION}" ] && LIBFABRIC_MODULE_VERSION=$(grep 'Version:' /opt/amazon/efa/lib64/pkgconfig/libfabric.pc | awk '{print $2}')
     [ -z "${LIBFABRIC_MODULE}" ] && LIBFABRIC_MODULE="libfabric-aws/${LIBFABRIC_MODULE_VERSION}"
